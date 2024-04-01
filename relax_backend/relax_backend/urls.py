@@ -17,8 +17,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from rest_framework import routers
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .views import RelationViewSet, FunctionalDependencyViewSet
+
+router = DefaultRouter()
+router.register(r'api/functional-dependencies', FunctionalDependencyViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include(router.urls)),
 ]
-router = routers.DefaultRouter()
