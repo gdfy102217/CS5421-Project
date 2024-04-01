@@ -4,7 +4,6 @@ def manual_closure_with_cost(X, F):
     fd_rhs = set()
     for left, right in F:
         fd_rhs.add(tuple(right))
-
         for left, right in F:
             if left.issubset(X):
                 added = False
