@@ -1,5 +1,6 @@
 # CS5421-Project
-Overview:
+## Overview:
+
 "Relax and Find the Key" is an online game designed to enhance your understanding of relational schemas and functional dependencies by engaging in a fun and challenging environment. 
 The game generates random problems of varying difficulty levels, providing an opportunity to practice identifying candidate keys.
 
