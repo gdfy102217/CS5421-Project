@@ -3,5 +3,5 @@ import React from "react";
 import {option} from "./Options";
 
 export const GraphEchart = () => {
-    return <ReactECharts option={option} />;
+	return <ReactECharts option={option}/>;
 }
