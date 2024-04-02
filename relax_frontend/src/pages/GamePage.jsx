@@ -1,92 +1,40 @@
 import React, { useState } from 'react';
-import { Row, Col, Typography, Checkbox, Button } from "antd";
+import { Row, Col, Flex, Typography, Button, Input } from "antd";
+import { CloseCircleOutlined } from '@ant-design/icons';
 import { useParams } from "react-router-dom";
 import { MainLayout } from '../layout/MainLayout';
-import { functionalDependencies } from '../utils/dummyData';
-// import * as echarts from 'echarts';
-import ReactECharts from 'echarts-for-react';
+import { GraphEchart } from "../Echarts/GraphEchart";
 
 export const GamePage = (props) => {
-  const [checkedValues, setCheckedValues] = useState();
-  const candidateKeys = ['A', 'B', 'C'];
+  const [inputs, setInputs] = useState([""]);
 
-  const onChange = (checkedValues) => {
-    setCheckedValues(checkedValues);
-  };
+  const onInputChange = (index, value) => {
+    const newInputs = [...inputs]; // Create a copy of the inputs array
+    newInputs[index] = value; // Update the value at the specified index
+    setInputs(newInputs);
+  }
+    const addInput = () => {
+    setInputs([...inputs, ""]);
+  }
+
+  const removeInput = () => {
+    const newInputs = inputs.slice(0, -1);
+    setInputs(newInputs);
+  }
+
+  const removeSelectedInput = (index) => {
+    console.log(index)
+    const newInputs = inputs.filter((_, i) => i !== index);
+    setInputs(newInputs);
+  }
 
   const onSubmit = () => {
-    console.log(checkedValues);
+    console.log(inputs);
   }
 
   var { level } = useParams();
 
-  // Draw the chart
-  const option = {
-    // title: {
-    //   text: 'Functional Dependency Graph',
-    // },
-    tooltip: {},
-    animationDurationUpdate: 1500,
-    animationEasingUpdate: 'quinticInOut',
-    series: [
-      {
-        type: 'graph',
-        layout: 'none',
-        symbolSize: 50,
-        roam: true,
-        label: {
-          show: true
-        },
-        edgeSymbol: ['circle', 'arrow'],
-        edgeSymbolSize: [4, 10],
-        edgeLabel: {
-          fontSize: 20
-        },
-        data: [
-          {
-            name: 'A',
-            x: 300,
-            y: 300
-          },
-          {
-            name: 'B',
-            x: 800,
-            y: 300
-          },
-          {
-            name: 'C',
-            x: 550,
-            y: 100
-          },
-          {
-            name: 'D',
-            x: 550,
-            y: 500
-          }
-        ],
-        links: [
-          {
-            source: 'A',
-            target: 'B'
-          },
-          {
-            source: 'B',
-            target: 'C'
-          },
-          {
-            source: 'C',
-            target: 'D'
-          }
-        ],
-        lineStyle: {
-          opacity: 0.9,
-          width: 2,
-          curveness: 0,
-          color: 'white'
-        }
-      }
-    ]
-  };
+
 
   return (
     <MainLayout>
@@ -96,7 +44,7 @@ export const GamePage = (props) => {
         </Typography.Title>
         <Row justify='center' style={{ marginTop: 20, minWidth: '100vh' }}>
           <Col flex={2}>
-          <ReactECharts option={option} />
+            <GraphEchart />
             {/* {
               functionalDependencies.easy.map((fd) =>
                 <div>
@@ -107,26 +55,30 @@ export const GamePage = (props) => {
               )
             } */}
           </Col>
-          
+
           <Col flex={2}>
-            <Checkbox.Group style={{ color: 'white' }} onChange={onChange} >
-              {
-                candidateKeys.map((ck, key) =>
-                  <Row>
-                    <Col span={24}>
-                      <Checkbox value={ck}>
-                        <Typography.Text level={4} style={{ color: 'white' }}>
-                          {ck}
-                        </Typography.Text>
-                      </Checkbox>
-                    </Col>
-                  </Row>
-                )
-              }
-            </Checkbox.Group>
-            <Button onClick={onSubmit}>
-            submit
-          </Button> 
+            <Flex vertical gap={12} justify="center" align="center">
+              {inputs.map((input, index) =>
+                  <Input
+                      key={index}
+                      placeholder="candidate key"
+                      onChange={(e) => onInputChange(index, e.target.value)}
+                      suffix={<CloseCircleOutlined onClick={(e) => removeSelectedInput(index)}/>}
+                  />
+              )}
+
+            </Flex>
+            <br/>
+            <Flex horizontal gap={12} justify="center" align="center">
+              <Button style={{width: 100}} onClick={addInput}>
+                Add
+              </Button>
+              <Button style={{ width: 100 }} onClick={removeInput}>
+                Remove
+              </Button>
+              <Button style={{width: 100}} onClick={onSubmit}>
+                Submit
+              </Button></Flex>
           </Col>
           <br />
           
