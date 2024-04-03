@@ -1,26 +1,24 @@
 import ReactECharts from "echarts-for-react";
 import React, {useEffect} from "react";
 import {option} from "./Options";
-import {attributes, functionalDependencies} from "../utils/dummyData";
 
 export const GraphEchart = ({prop}) => {
-	const level = prop;
+	const data = prop;
 	let echartsElement;
 
 	useEffect(() => {
-		option.series[0].data = generateData(level);
-		option.series[0].links = generateLinks(level);
-		// console.log("test!");
+		option.series[0].data = generateData(data);
+		option.series[0].links = generateLinks(data);
 		echartsElement.getEchartsInstance().setOption(option);
-	}, [level]);
+	}, [data]);
 
-	const generateData = (level) => {
+	const generateData = (data) => {
 		let x = 300;
 		let y = 300;
-		let data = [];
+		let attributes = [];
 
-		attributes[level].forEach((attr) => {
-			data.push({
+		data["attributes"].forEach((attr) => {
+			attributes.push({
 				name: attr,
 				x: x,
 				y: y
@@ -33,14 +31,14 @@ export const GraphEchart = ({prop}) => {
 				y += 300;
 			}
 		});
-		return data;
+		return attributes;
 	}
 
-	const generateLinks = (level) => {
+	const generateLinks = (data) => {
 		const links = [];
-		functionalDependencies[level].forEach(item => {
-			item.lhs.forEach(d => {
-				item.rhs.forEach(e => {
+		data["fds"].forEach(item => {
+			item[0].forEach(d => {
+				item[1].forEach(e => {
 					links.push({
 						source: d,
 						target: e
