@@ -6,6 +6,7 @@ import {MainLayout} from '../layout/MainLayout';
 import {GraphEchart} from "../Echarts/GraphEchart";
 import {GameLevelContext} from "../context/GameLevelContext";
 import {ButtonGroup} from "../components/ButtonGroup";
+import {ScoreModal} from "../components/ScoreModal";
 
 export const GamePage = (props) => {
 	const gameLevels = useContext(GameLevelContext);
@@ -13,6 +14,8 @@ export const GamePage = (props) => {
 	const index = gameLevels.indexOf(level);
 	const [inputs, setInputs] = useState([""]);
 	const [data, setData] = useState(null);
+	const [openModal, setOpenModal] = useState(false);
+	const [score, setScore] = useState(0);
 	const [error, setError] = useState(null);
 	const [loading, setLoading] = useState(true);
 	const navigate = useNavigate();
@@ -27,7 +30,9 @@ export const GamePage = (props) => {
 		setInputs([""]);
 		const fetchData = async () => {
 			try {
-				const response = await fetch(`http://127.0.0.1:8000/api/functionalDependencies/?difficulty=${level.toLowerCase()}`);
+				const response = await fetch(
+					`http://127.0.0.1:8000/api/functionalDependencies/?difficulty=${level.toLowerCase()}`
+				);
 				const jsonData = await response.json();
 				setData(jsonData);
 			} catch (error) {
@@ -60,9 +65,46 @@ export const GamePage = (props) => {
 		setInputs(newInputs);
 	}
 
+	const normalizeString = str => str.split('').sort().join('');
 	const onSubmit = () => {
-		console.log(inputs);
+		if (!data || !data["candidate_keys"]) {
+			setError(error.message);
+		}
+		const scorePerKey = 100 / data["candidate_keys"].length;
+		setScore(0);
+		let newScore = 0;
+		// Normalize elements in input array
+		const normalizedInputs = inputs.map(normalizeString);
+		const candidate_keys = JSON.parse(JSON.stringify(data["candidate_keys"]));
+
+		// Check if normalizedInput elements exist in candidate_keys
+		for (let i = 0; i < normalizedInputs.length; i++) {
+			const key = normalizedInputs[i];
+			let foundIndex = -1;
+			// Check each candidate key
+			for (let j = 0; j < candidate_keys.length; j++) {
+				const normalizedCandidateKey = candidate_keys[j].slice().sort().join('');
+				console.log(normalizedCandidateKey);
+				if (key === normalizedCandidateKey) {
+					newScore += scorePerKey;
+					foundIndex = j;
+					break;
+				}
+			}
+
+			// Remove the matched element from candidate_keys array
+			if (foundIndex !== -1) {
+				candidate_keys.splice(foundIndex, 1);
+			}
+		}
+		if (Number.isInteger(newScore)) {
+			setScore(newScore.toFixed(0));
+		} else {
+			setScore(newScore.toFixed(2));
+		}
+		setOpenModal(true);
 	}
+
 	if (loading) {
 		return <MainLayout>
 			<Flex align="center" gap="middle">
@@ -82,11 +124,11 @@ export const GamePage = (props) => {
 	return (
 		<MainLayout>
 			<Row justify='center' style={{marginTop: 20, minWidth: '100%', minHeight: "100%"}}>
-				<Col span={12}>
+				<Col span={10}>
 					<GraphEchart prop={data}/>
 				</Col>
 				<Col span={4}>
-					<Typography.Title style={{textAlign: "center", color: 'white'}} level={3}>Functional
+					<Typography.Title style={{textAlign: "center", color: 'white'}} level={4}>Functional
 						Dependency</Typography.Title>
 					{data["fds"] ?
 						data["fds"].map((fd, index) =>
@@ -104,14 +146,14 @@ export const GamePage = (props) => {
 						)
 						: <></>}
 				</Col>
-				<Col span={8}>
+				<Col span={10}>
 					<Flex vertical gap={12} justify="center" align="center">
 						<Typography.Title style={{textAlign: "center", color: 'white'}} level={3}>Find all candidate
 							keys</Typography.Title>
 						{inputs.map((input, index) =>
 							<Input
 								key={index}
-								style={{width: 350}}
+								style={{maxWidth: 350}}
 								placeholder="candidate key"
 								onChange={(e) => onInputChange(index, e.target.value)}
 								suffix={<CloseCircleOutlined onClick={(e) => removeSelectedInput(index)}/>}
@@ -135,6 +177,12 @@ export const GamePage = (props) => {
 				<br/>
 			</Row>
 			<ButtonGroup prop={index}/>
+			<br/>
+			<ScoreModal
+				setOpenModal={setOpenModal} openModal={openModal}
+				score={score}
+				answer={data["candidate_keys"].map(key => key.slice().sort().join('')).join(', ')}
+			/>
 		</MainLayout>
 	);
 }
