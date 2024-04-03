@@ -1,6 +1,9 @@
 import random
 import string
+import time
+from collections import defaultdict
 from itertools import chain, combinations
+import matplotlib.pyplot as plt
 
 
 def generate_random_fds(n, k):
@@ -19,7 +22,7 @@ def generate_random_fds(n, k):
         lhs = frozenset(lhs)
         rhs = frozenset(rhs)
 
-        if lhs and lhs != rhs:
+        if lhs and rhs and lhs != rhs:
             fd = (lhs, rhs)
 
             if fd not in fds:
@@ -96,12 +99,40 @@ def identifyCandidateKeys(attributes, fds):
 
 
 def main():
-    fds, attributes = generate_random_fds(5, 3)
-    print("Functional Dependencies: ", fds)
-    print("Attributes: ", attributes)
-    candidate_keys, total_cost = identifyCandidateKeys(attributes, fds)
-    print("Candidate Keys:", candidate_keys)
-    print("Total Cost:", total_cost)
+    # print("Functional Dependencies: ", fds)
+    # print("Attributes: ", attributes)
+
+    # print("Candidate Keys:", candidate_keys)
+    # print("Total Cost:", total_cost)
+    start = time.time()
+    difficulty_stats = defaultdict(int)
+    for i in range(1000):
+        fds, attributes = generate_random_fds(8, 3)
+
+        candidate_keys, total_cost = identifyCandidateKeys(attributes, fds)
+
+        difficulty_stats[total_cost] += 1
+        if total_cost > 100:
+            print("Functional Dependencies: ", fds)
+            print("Attributes: ", attributes)
+
+            print("Candidate Keys:", candidate_keys)
+            print("Total Cost:", total_cost)
+
+    sorted_stats = dict(sorted(difficulty_stats.items()))
+    end = time.time()
+    print(end - start)
+    # print(difficulty_stats)
+    difficulty_levels = list(sorted_stats.keys())
+    num_questions = list(sorted_stats.values())
+
+    # Plotting
+    plt.bar(difficulty_levels, num_questions, color='skyblue')
+    plt.xlabel('Difficulty')
+    plt.ylabel('Number of Questions')
+    plt.title('Difficulty Distribution of Questions')
+    plt.xticks(difficulty_levels)
+    plt.show()
 
 
 if __name__ == "__main__":
