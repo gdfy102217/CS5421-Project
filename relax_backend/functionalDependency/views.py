@@ -12,10 +12,10 @@ class FunctionalDependencyViewSet(viewsets.ViewSet):
             candidate_keys, total_cost = identifyCandidateKeys(attributes, fds)
 
             if level == "easy" and total_cost < 50:
-                return Response({'fds': fds, "candidate_keys": candidate_keys})
+                return Response({"attributes": attributes, "fds": fds, "candidate_keys": candidate_keys})
 
-            if level == "medium" and total_cost >= 50 and total_cost > 100:
-                return Response({'fds': fds, "candidate_keys": candidate_keys})
+            if level == "medium" and 50 <= total_cost < 100:
+                return Response({"attributes": attributes, "fds": fds, "candidate_keys": candidate_keys})
 
             if level == "hard" and total_cost > 100:
-                return Response({'fds': fds, "candidate_keys": candidate_keys})
+                return Response({"attributes": attributes, "fds": fds, "candidate_keys": candidate_keys})
