@@ -1,18 +1,22 @@
-import React, {useState, useContext} from 'react';
-import {Row, Col, Flex, Typography, Button, Input, Space} from "antd";
-import {CloseCircleOutlined, RightOutlined, LeftOutlined, HomeOutlined} from '@ant-design/icons';
-import {useNavigate, useParams} from "react-router-dom";
+import React, {useState, useContext, useEffect} from 'react';
+import {Row, Col, Flex, Typography, Button, Input} from "antd";
+import {CloseCircleOutlined} from '@ant-design/icons';
+import {useParams} from "react-router-dom";
 import {MainLayout} from '../layout/MainLayout';
 import {GraphEchart} from "../Echarts/GraphEchart";
 import {GameLevelContext} from "../context/GameLevelContext";
 import {functionalDependencies} from "../utils/dummyData";
+import {ButtonGroup} from "../components/ButtonGroup";
 
 export const GamePage = (props) => {
 	const gameLevels = useContext(GameLevelContext);
 	const {level} = useParams();
 	const index = gameLevels.indexOf(level);
-	const navigate = useNavigate();
 	const [inputs, setInputs] = useState([""]);
+
+	useEffect(() => {
+		setInputs([""]);
+	}, [level]);
 
 	const onInputChange = (index, value) => {
 		const newInputs = [...inputs]; // Create a copy of the inputs array
@@ -29,7 +33,7 @@ export const GamePage = (props) => {
 	}
 
 	const removeSelectedInput = (index) => {
-		console.log(index)
+		if (inputs.length === 1) return;
 		const newInputs = inputs.filter((_, i) => i !== index);
 		setInputs(newInputs);
 	}
@@ -46,10 +50,11 @@ export const GamePage = (props) => {
 						<GraphEchart prop={level}/>
 					</Col>
 					<Col span={4}>
+						<Typography.Title style={{ textAlign: "center", color: 'white' }} level={3}>Functional Dependency</Typography.Title>
 						{functionalDependencies[level] ?
               functionalDependencies[level].map((fd, index) =>
-                <div key={index} style={{ display: "flex", justifyContent: "center", alignItems: "center", minWidth: "100%"}}>
-                  <Typography.Text level={4} style={{ textAlign: "center", color: 'white' }}>
+                <div key={index} style={{ display: "flex", justifyContent: "center", marginTop: 10, minWidth: "100%", background: "deepskyblue"}}>
+                  <Typography.Text level={3} style={{ textAlign: "center", color: 'white' }}>
                     {fd.lhs.join("") + ' -> ' + fd.rhs.join("")}
                   </Typography.Text>
                 </div>
@@ -58,6 +63,7 @@ export const GamePage = (props) => {
 					</Col>
 					<Col span={8}>
 						<Flex vertical gap={12} justify="center" align="center">
+							<Typography.Title style={{ textAlign: "center", color: 'white' }} level={3}>Find all candidate keys</Typography.Title>
 							{inputs.map((input, index) =>
 								<Input
 									key={index}
@@ -74,7 +80,7 @@ export const GamePage = (props) => {
 							<Button style={{width: 100}} onClick={addInput}>
 								Add
 							</Button>
-							<Button style={{width: 100}} onClick={removeInput}>
+							<Button style={{width: 100}} disabled={inputs.length <= 1} onClick={removeInput}>
 								Remove
 							</Button>
 							<Button style={{width: 100}} onClick={onSubmit}>
@@ -85,34 +91,7 @@ export const GamePage = (props) => {
 					<br/>
 
 				</Row>
-				<Button
-					style={{position: "absolute", top: 100, left: 40}}
-					icon={<HomeOutlined />}
-					onClick={() => navigate("/")}
-				>
-					Home
-				</Button>
-				{index !== 0 ?
-					<Button
-						style={{position: "absolute", bottom: 40, left: 40}}
-						icon={<LeftOutlined/>}
-						onClick={() => navigate("/game/".concat(gameLevels[index - 1]))}
-					>
-						Previous Level
-					</Button> : <></>
-				}
-				{index !== gameLevels.length - 1 ?
-					<Button
-						style={{position: "absolute", bottom: 40, right: 40}}
-						onClick={() => navigate("/game/".concat(gameLevels[index + 1]))}
-					>
-						<Space>
-							Next Level
-							<RightOutlined/>
-						</Space>
-					</Button>
-					: <></>
-				}
+				<ButtonGroup prop={index}/>
 			</div>
 
 		</MainLayout>

@@ -2,11 +2,9 @@ import ReactECharts from "echarts-for-react";
 import React, {useEffect} from "react";
 import {option} from "./Options";
 import {attributes, functionalDependencies} from "../utils/dummyData";
-import {useParams} from "react-router-dom";
 
 export const GraphEchart = ({prop}) => {
-	// const level = prop.toLowerCase();
-	const {level} = useParams();
+	const level = prop;
 	let echartsElement;
 
 	useEffect(() => {

@@ -44,3 +44,9 @@ export const functionalDependencies = {
     },
   ]
 }
+
+export const answers = {
+  Easy: ["A"],
+  Medium: ["A"],
+  Hard: ["A"],
+}
