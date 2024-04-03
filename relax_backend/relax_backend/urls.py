@@ -20,7 +20,7 @@ from rest_framework.routers import DefaultRouter
 from functionalDependency.views import FunctionalDependencyViewSet
 
 router = DefaultRouter()
-router.register(r'functional-dependencies', FunctionalDependencyViewSet)
+router.register(r'api/functionalDependencies', FunctionalDependencyViewSet, basename='functionalDependency')
 
 urlpatterns = [
     path('admin/', admin.site.urls),
