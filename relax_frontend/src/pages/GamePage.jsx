@@ -1,10 +1,11 @@
 import React, {useState, useContext} from 'react';
 import {Row, Col, Flex, Typography, Button, Input, Space} from "antd";
-import {CloseCircleOutlined, RightOutlined, LeftOutlined} from '@ant-design/icons';
+import {CloseCircleOutlined, RightOutlined, LeftOutlined, HomeOutlined} from '@ant-design/icons';
 import {useNavigate, useParams} from "react-router-dom";
 import {MainLayout} from '../layout/MainLayout';
 import {GraphEchart} from "../Echarts/GraphEchart";
 import {GameLevelContext} from "../context/GameLevelContext";
+import {functionalDependencies} from "../utils/dummyData";
 
 export const GamePage = (props) => {
 	const gameLevels = useContext(GameLevelContext);
@@ -40,24 +41,22 @@ export const GamePage = (props) => {
 	return (
 		<MainLayout>
 			<div className="App-header">
-				<Typography.Title level={4} style={{color: 'white'}}>
-					Game Level: {level}
-				</Typography.Title>
-				<Row justify='center' style={{marginTop: 20, minWidth: '100vh'}}>
-					<Col flex={2}>
-						<GraphEchart/>
-						{/* {
-              functionalDependencies.easy.map((fd) =>
-                <div>
-                  <Typography.Text level={4} style={{ color: 'white' }}>
-                    {fd.determinant + ' -> ' + fd.dependend}
+				<Row justify='center' style={{marginTop: 20, minWidth: '100%', minHeight: "100%"}}>
+					<Col span={12}>
+						<GraphEchart prop={level}/>
+					</Col>
+					<Col span={4}>
+						{functionalDependencies[level] ?
+              functionalDependencies[level].map((fd, index) =>
+                <div key={index} style={{ display: "flex", justifyContent: "center", alignItems: "center", minWidth: "100%"}}>
+                  <Typography.Text level={4} style={{ textAlign: "center", color: 'white' }}>
+                    {fd.lhs.join("") + ' -> ' + fd.rhs.join("")}
                   </Typography.Text>
                 </div>
               )
-            } */}
+            : <></>}
 					</Col>
-
-					<Col flex={2}>
+					<Col span={8}>
 						<Flex vertical gap={12} justify="center" align="center">
 							{inputs.map((input, index) =>
 								<Input
@@ -86,6 +85,13 @@ export const GamePage = (props) => {
 					<br/>
 
 				</Row>
+				<Button
+					style={{position: "absolute", top: 100, left: 40}}
+					icon={<HomeOutlined />}
+					onClick={() => navigate("/")}
+				>
+					Home
+				</Button>
 				{index !== 0 ?
 					<Button
 						style={{position: "absolute", bottom: 40, left: 40}}

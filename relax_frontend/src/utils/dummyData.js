@@ -1,17 +1,46 @@
 export const difficultyLevels = ["Easy", "Medium", "Hard"]
+export const attributes = {
+  Easy: ["A", "B", "C"],
+  Medium: ["A", "B", "C", "D", "E"],
+  Hard: ["A", "B", "C", "D", "E", "F", "G"]
+}
 export const functionalDependencies = {
-  easy: [
+  Easy: [
     {
-      determinant: 'A',
-      dependend: 'B',
+      lhs: ['A'],
+      rhs: ['B'],
     },
     {
-      determinant: 'B',
-      dependend: 'C',
-    },
-    {
-      determinant: 'C',
-      dependend: 'D',
+      lhs: ['B'],
+      rhs: ['C'],
     }
+  ],
+  Medium: [
+    {
+      lhs: ['A', 'B'],
+      rhs: ['C', 'D'],
+    },
+    {
+      lhs: ['D'],
+      rhs: ['E'],
+    }
+  ],
+  Hard: [
+    {
+      lhs: ['A', 'B'],
+      rhs: ['C', 'D'],
+    },
+    {
+      lhs: ['E', 'G'],
+      rhs: ['A', 'C'],
+    },
+    {
+      lhs: ['D'],
+      rhs: ['E'],
+    },
+    {
+      lhs: ['F'],
+      rhs: ['E', 'G'],
+    },
   ]
 }

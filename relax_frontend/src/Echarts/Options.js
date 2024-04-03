@@ -1,8 +1,4 @@
-// Draw the chart
 export const option = {
-	// title: {
-	//   text: 'Functional Dependency Graph',
-	// },
 	tooltip: {},
 	animationDurationUpdate: 1500,
 	animationEasingUpdate: 'quinticInOut',
@@ -20,42 +16,6 @@ export const option = {
 			edgeLabel: {
 				fontSize: 20
 			},
-			data: [
-				{
-					name: 'A',
-					x: 300,
-					y: 300
-				},
-				{
-					name: 'B',
-					x: 800,
-					y: 300
-				},
-				{
-					name: 'C',
-					x: 550,
-					y: 100
-				},
-				{
-					name: 'D',
-					x: 550,
-					y: 500
-				}
-			],
-			links: [
-				{
-					source: 'A',
-					target: 'B'
-				},
-				{
-					source: 'B',
-					target: 'C'
-				},
-				{
-					source: 'C',
-					target: 'D'
-				}
-			],
 			lineStyle: {
 				opacity: 0.9,
 				width: 2,
