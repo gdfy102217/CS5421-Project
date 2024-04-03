@@ -24,7 +24,7 @@ export const GamePage = (props) => {
 		navigate("/404");
 	}
 
-	useEffect(() => {
+	const getGame = () => {
 		setLoading(true);
 		setData(null);
 		setInputs([""]);
@@ -42,7 +42,9 @@ export const GamePage = (props) => {
 			}
 		};
 		fetchData();
-
+	}
+	useEffect(() => {
+		getGame();
 	}, [level]);
 
 	const onInputChange = (index, value) => {
@@ -55,6 +57,7 @@ export const GamePage = (props) => {
 	}
 
 	const removeInput = () => {
+		if (inputs.length === 1) return;
 		const newInputs = inputs.slice(0, -1);
 		setInputs(newInputs);
 	}
@@ -85,7 +88,7 @@ export const GamePage = (props) => {
 			for (let j = 0; j < candidate_keys.length; j++) {
 				const normalizedCandidateKey = candidate_keys[j].slice().sort().join('');
 				console.log(normalizedCandidateKey);
-				if (key === normalizedCandidateKey) {
+				if (key.toLowerCase() === normalizedCandidateKey.toLowerCase()) {
 					newScore += scorePerKey;
 					foundIndex = j;
 					break;
@@ -148,8 +151,9 @@ export const GamePage = (props) => {
 				</Col>
 				<Col span={10}>
 					<Flex vertical gap={12} justify="center" align="center">
-						<Typography.Title style={{textAlign: "center", color: 'white'}} level={3}>Find all candidate
-							keys</Typography.Title>
+						<Typography.Title style={{textAlign: "center", color: 'white'}} level={4}>
+							Find all candidate keys
+						</Typography.Title>
 						{inputs.map((input, index) =>
 							<Input
 								key={index}
@@ -166,7 +170,7 @@ export const GamePage = (props) => {
 						<Button style={{width: 100}} onClick={addInput}>
 							Add
 						</Button>
-						<Button style={{width: 100}} disabled={inputs.length <= 1} onClick={removeInput}>
+						<Button style={{width: 100}} onClick={removeInput}>
 							Remove
 						</Button>
 						<Button style={{width: 100}} onClick={onSubmit}>
@@ -182,6 +186,7 @@ export const GamePage = (props) => {
 				setOpenModal={setOpenModal} openModal={openModal}
 				score={score}
 				answer={data["candidate_keys"].map(key => key.slice().sort().join('')).join(', ')}
+				getGame={getGame}
 			/>
 		</MainLayout>
 	);

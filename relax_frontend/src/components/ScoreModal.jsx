@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import Draggable from 'react-draggable';
 import { Collapse, Modal, Divider, Typography } from 'antd';
-export const ScoreModal = ({ setOpenModal, openModal, score, answer }) => {
+export const ScoreModal = ({ setOpenModal, openModal, score, answer, getGame }) => {
 	const [disabled, setDisabled] = useState(true);
 	const [bounds, setBounds] = useState({
 		left: 0,
@@ -11,11 +11,10 @@ export const ScoreModal = ({ setOpenModal, openModal, score, answer }) => {
 	});
 	const draggleRef = useRef(null);
 	const handleOk = (e) => {
-		console.log(e);
+		getGame();
 		setOpenModal(false);
 	};
 	const handleCancel = (e) => {
-		console.log(e);
 		setOpenModal(false);
 	};
 	const onStart = (_event, uiData) => {
@@ -50,7 +49,6 @@ export const ScoreModal = ({ setOpenModal, openModal, score, answer }) => {
 						}}
 						onFocus={() => {}}
 						onBlur={() => {}}
-						// end
 					>
 						Your score in this game:
 					</div>
@@ -58,8 +56,8 @@ export const ScoreModal = ({ setOpenModal, openModal, score, answer }) => {
 				open={openModal}
 				onOk={handleOk}
 				onCancel={handleCancel}
-				okText="Go Next Level"
-				cancelText="Try Again"
+				okText="Try Another"
+				cancelText="Go Back"
 				modalRender={(modal) => (
 					<Draggable
 						disabled={disabled}
